@@ -2,48 +2,47 @@
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------------- Price list data (from printed menu) ---------------- */
   const MENU = [
     { id: 'acrylic', title: 'Acrylic Nails', items: [
-      ['Full Set Acrylic With Gel Colour', '£32', 'p3997381.jpg'],
+      ['Full Set Acrylic With Gel Colour', '£32', 'treatments/acrylic-full-set.jpg'],
       ['Full Set Permanent White Tip', '£30', 'p13038494.jpg'],
-      ['Overlay On Natural Nails With Gel Colour', '£30', 'p3997388.jpg'],
-      ['Infill With Gel Colour', '£27', 'p3997386.jpg'],
+      ['Overlay On Natural Nails With Gel Colour', '£30', 'treatments/natural-acrylic-overlay.jpg'],
+      ['Infill With Gel Colour', '£27', 'treatments/acrylic-infill.jpg'],
     ]},
     { id: 'pedicure', title: 'Full Spa Pedicure', items: [
       ['Spa Pedicure Without Gel', '£35', 'p5240677.jpg'],
       ['Spa Pedicure With Gel Colour', '£40', 'p9789201.jpg'],
     ]},
     { id: 'toes', title: 'Acrylic Toes', items: [
-      ['Full Set Acrylic Toes With Gel Colour', '£35', 'p4963851.jpg'],
-      ['Acrylic On One Toe', '£3', 'p17056221.jpg'],
+      ['Full Set Acrylic Toes With Gel Colour', '£35', 'treatments/acrylic-toes.jpg'],
+      ['Acrylic On One Toe', '£3', 'treatments/single-toe-acrylic.jpg'],
     ]},
     { id: 'takeoff', title: 'Take Off', items: [
-      ['Take Off Acrylic Only', '£10', 'p3997389.jpg'],
-      ['Take Off Gel Colour Only', '£7', 'p3997391.jpg'],
-      ['Take Off Gel Toes & Redone French Tip', '£28', 'p5999078.jpg'],
-      ['Take Off And Newset', 'Extra £3', 'p7755219.jpg'],
+      ['Take Off Acrylic Only', '£10', 'treatments/acrylic-removal.jpg'],
+      ['Take Off Gel Colour Only', '£7', 'treatments/gel-removal.jpg'],
+      ['Take Off Gel Toes & Redone French Tip', '£28', 'treatments/french-toes-redone.jpg'],
+      ['Take Off And Newset', 'Extra £3', 'treatments/takeoff-newset.jpg'],
     ]},
     { id: 'ombre', title: 'Ombre / Powder Colour', items: [
-      ['Full Set Ombre', '£35', 'p7664093.jpg'],
-      ['Infill Ombre', '£30', 'p16363470.jpg'],
+      ['Full Set Ombre', '£35', 'retouched/soft-white-ombre.jpg'],
+      ['Infill Ombre', '£30', 'treatments/ombre-infill.jpg'],
     ]},
     { id: 'gel', title: 'Gel Colour', items: [
       ['Gel Colour On Natural Nail', '£20', 'p939835.jpg'],
-      ['Gel Toes', '£22', 'p310278.jpg'],
+      ['Gel Toes', '£22', 'treatments/gel-toes.jpg'],
       ['Take Off And Redone', 'Extra £3', 'p7755217.jpg'],
-      ['Kids Gel Colour', 'From £10 – £15', 'p939836.jpg'],
+      ['Kids Gel Colour', 'From £10 – £15', 'treatments/kids-gel-colour.jpg'],
     ]},
     { id: 'biab', title: 'BIAB / Builder Gel', items: [
-      ['BIAB Natural Nails', '£30', 'p3997392.jpg'],
-      ['BIAB Extension', '£35', 'p7755220.jpg'],
+      ['BIAB Natural Nails', '£30', 'treatments/biab-natural.jpg'],
+      ['BIAB Extension', '£35', 'treatments/biab-extension.jpg'],
     ]},
     { id: 'extras', title: 'Extra Services', items: [
-      ['French / White Tips', 'From extra £5', 'p34997562.jpg'],
-      ['Design', 'From extra £5', 'p704815.jpg'],
-      ['Diamonds', 'From extra £5', 'p15655125.jpg'],
+      ['French / White Tips', 'From extra £5', 'retouched/pearl-gold-french.jpg'],
+      ['Design', 'From extra £5', 'retouched/magenta-gold-florals.jpg'],
+      ['Diamonds', 'From extra £5', 'retouched/crystal-floral-french.jpg'],
     ]},
   ];
 
@@ -78,7 +77,7 @@
       const items = c.items.filter(([n]) => !q || n.toLowerCase().includes(q) || c.title.toLowerCase().includes(q));
       if (!items.length) return;
       html += items.map(([n, p, image]) => `<article class="menu-card">
-        <img class="menu-card__image" src="images/${image}" alt="${escapeHtml(n)}" loading="lazy" width="480" height="330">
+        <img class="menu-card__image" src="images/${image}" alt="${escapeHtml(n)}" loading="lazy" width="480" height="480">
         <div class="menu-card__body"><p class="menu-card__category">${escapeHtml(c.title)}</p><h3>${highlight(n, q)}</h3><span class="menu-item__price">${escapeHtml(p)}</span></div>
         <a class="svc__book" href="tel:07777999789" aria-label="Call to book ${escapeHtml(n)}">Book Now <span aria-hidden="true">&nearr;</span></a>
       </article>`).join('');
@@ -185,6 +184,7 @@
     group = list; gi = i;
     showLb();
     lb.hidden = false;
+    syncGalleryPlayback();
     document.body.style.overflow = 'hidden';
     $$('.lightbox__arrow', lb).forEach((a) => { a.hidden = group.length < 2; });
   }
@@ -192,26 +192,90 @@
     lbImg.src = group[gi].src;
     lbImg.alt = group[gi].alt;
   }
-  function closeLb() { lb.hidden = true; document.body.style.overflow = ''; }
+  function closeLb() { lb.hidden = true; document.body.style.overflow = ''; syncGalleryPlayback(); }
   const galleryItems = $$('.masonry__item');
   let galleryIndex = 0;
   const featured = $('.gallery__featured img');
-  function selectGallery(i) {
+  const galleryTrack = $('.gallery__track');
+  const slideImages = $$('[data-gallery-offset]');
+  let slideAnimations = [];
+  const gallerySection = $('#gallery');
+  const playbackButton = $('[data-gallery-playback]');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let galleryPaused = reducedMotion.matches;
+  let galleryVisible = false;
+  let galleryTimer;
+  function syncGalleryPlayback() {
+    clearInterval(galleryTimer);
+    playbackButton.textContent = galleryPaused ? 'Play slideshow' : 'Pause slideshow';
+    playbackButton.setAttribute('aria-pressed', galleryPaused);
+    $('.gallery__counter').setAttribute('aria-live', galleryPaused ? 'polite' : 'off');
+    $('.gallery__caption').setAttribute('aria-live', galleryPaused ? 'polite' : 'off');
+    const interacting = gallerySection.contains(document.activeElement) && document.activeElement !== playbackButton;
+    if (galleryPaused || !galleryVisible || document.hidden || !lb.hidden || interacting) return;
+    galleryTimer = setInterval(() => selectGallery(galleryIndex + 1), 4500);
+  }
+  function renderGalleryPhotos(index) {
+    slideImages.forEach((img) => {
+      const item = galleryItems[(index + +img.dataset.galleryOffset + galleryItems.length) % galleryItems.length];
+      img.src = item.dataset.lightboxSrc;
+      img.alt = +img.dataset.galleryOffset === 0 ? $('img', item).alt : '';
+    });
+  }
+  function selectGallery(i, animate = true) {
+    slideAnimations.forEach((animation) => animation.cancel());
+    slideAnimations = [];
+    const previous = galleryIndex;
+    renderGalleryPhotos(previous);
     galleryIndex = (i + galleryItems.length) % galleryItems.length;
     const selected = galleryItems[galleryIndex];
-    featured.src = selected.dataset.lightboxSrc;
-    featured.alt = $('img', selected).alt;
+    $('.gallery__caption').textContent = $('img', selected).alt;
     galleryItems.forEach((b, j) => b.setAttribute('aria-pressed', j === galleryIndex));
     $('.gallery__counter').textContent = `${galleryIndex + 1} / ${galleryItems.length}`;
-    if (document.activeElement?.matches('[data-gallery-dir]')) selected.scrollIntoView({ behavior: reduceMotion ? 'instant' : 'smooth', block: 'nearest', inline: 'nearest' });
+    const forward = galleryIndex === (previous + 1) % galleryItems.length;
+    const backward = galleryIndex === (previous - 1 + galleryItems.length) % galleryItems.length;
+    if (animate && !reducedMotion.matches && (forward || backward)) {
+      const direction = forward ? 1 : -1;
+      const distance = $('.gallery__featured').getBoundingClientRect().width + parseFloat(getComputedStyle(galleryTrack).gap);
+      const options = { duration: 650, easing: 'cubic-bezier(.22,.68,.25,1)', fill: 'forwards' };
+      const motion = galleryTrack.animate([{ transform: 'translateX(-50%)' }, { transform: `translateX(calc(-50% - ${direction * distance}px))` }], options);
+      const incoming = slideImages.find((img) => +img.dataset.galleryOffset === direction);
+      slideAnimations = [motion, incoming.animate({ opacity: [.85, 1] }, options), featured.animate({ opacity: [1, .85] }, options)];
+      motion.onfinish = () => {
+        if (slideAnimations[0] !== motion) return;
+        renderGalleryPhotos(galleryIndex);
+        slideAnimations.forEach((animation) => animation.cancel());
+        slideAnimations = [];
+      };
+    } else {
+      renderGalleryPhotos(galleryIndex);
+    }
+    syncGalleryPlayback();
   }
+  playbackButton.addEventListener('click', () => {
+    galleryPaused = !galleryPaused;
+    syncGalleryPlayback();
+  });
+  const galleryObserver = new IntersectionObserver(([entry]) => {
+    galleryVisible = entry.intersectionRatio >= .15;
+    syncGalleryPlayback();
+  }, { threshold: .15 });
+  galleryObserver.observe(gallerySection);
+  ['focusin', 'focusout'].forEach((event) => {
+    gallerySection.addEventListener(event, () => queueMicrotask(syncGalleryPlayback));
+  });
+  document.addEventListener('visibilitychange', syncGalleryPlayback);
+  reducedMotion.addEventListener('change', (event) => {
+    if (event.matches) galleryPaused = true;
+    syncGalleryPlayback();
+  });
   galleryItems.forEach((b, i) => {
     b.setAttribute('aria-label', `Show ${$('img', b).alt}`);
-    b.addEventListener('click', () => selectGallery(i));
+    b.addEventListener('click', () => { galleryPaused = true; selectGallery(i); });
   });
-  $$('[data-gallery-dir]').forEach((b) => b.addEventListener('click', () => selectGallery(galleryIndex + +b.dataset.galleryDir)));
+  $$('[data-gallery-dir]').forEach((b) => b.addEventListener('click', () => { galleryPaused = true; selectGallery(galleryIndex + +b.dataset.galleryDir); }));
   $('.gallery__featured').addEventListener('click', () => openLb(galleryItems.map((g) => ({ src: g.dataset.lightboxSrc, alt: $('img', g).alt })), galleryIndex));
-  selectGallery(0);
+  selectGallery(0, false);
   $$('[data-lightbox-src]:not(.masonry__item)').forEach((b) => b.addEventListener('click', () => openLb([{ src: b.dataset.lightboxSrc, alt: b.dataset.lightboxAlt || '' }], 0)));
   $('.lightbox__close').addEventListener('click', closeLb);
   $('.lightbox__arrow--prev').addEventListener('click', () => { gi = (gi - 1 + group.length) % group.length; showLb(); });
