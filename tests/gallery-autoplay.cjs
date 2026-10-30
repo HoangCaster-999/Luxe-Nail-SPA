@@ -22,6 +22,10 @@ const path = require('node:path');
     for (const href of await bookingLinks.evaluateAll(links => links.map(link => link.getAttribute('href')))) {
       assert.equal(href, 'https://luxenailspa63vv.setmore.com');
     }
+    for (const link of await bookingLinks.all()) {
+      assert.equal(await link.getAttribute('target'), '_blank');
+      assert.ok((await link.getAttribute('rel')).split(/\s+/).includes('noopener'));
+    }
     assert.equal(await page.locator('.menu-card .svc__book').first().getAttribute('href'), 'https://luxenailspa63vv.setmore.com');
     assert.match(await page.locator('.hero__payment').innerText(), /Cash only/);
     assert.match(await page.locator('#contact .payment-note').innerText(), /Cash only/);
