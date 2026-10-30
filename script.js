@@ -79,7 +79,7 @@
       html += items.map(([n, p, image]) => `<article class="menu-card">
         <img class="menu-card__image" src="images/${image}" alt="${escapeHtml(n)}" loading="lazy" width="480" height="480">
         <div class="menu-card__body"><p class="menu-card__category">${escapeHtml(c.title)}</p><h3>${highlight(n, q)}</h3><span class="menu-item__price">${escapeHtml(p)}</span></div>
-        <a class="svc__book" href="mailto:Luxenailandspa27@gmail.com?subject=${encodeURIComponent(`Appointment request - ${n}`)}&amp;body=${encodeURIComponent(`Hello Luxe Nail & Spa,\r\n\r\nI would like to request an appointment.\r\nService: ${n}\r\nPreferred date: \r\nPreferred time: \r\nName: \r\nPhone: \r\n\r\nPlease confirm availability. Thank you.`)}" aria-label="Email to book ${escapeHtml(n)}">Book Now <span aria-hidden="true">&nearr;</span></a>
+        <a class="svc__book" href="https://luxenailspa63vv.setmore.com" aria-label="Book ${escapeHtml(n)}">Book Now <span aria-hidden="true">&nearr;</span></a>
       </article>`).join('');
     });
     gridEl.innerHTML = html;

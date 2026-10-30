@@ -17,19 +17,12 @@ const path = require('node:path');
     assert.equal(JSON.parse(schema).email, 'Luxenailandspa27@gmail.com');
     assert.equal(JSON.parse(schema).paymentAccepted, 'Cash');
     assert.equal(await page.locator('a[href="mailto:Luxenailandspa27@gmail.com"]').count(), 2);
-    const bookingLinks = page.locator('a').filter({ hasText: /Book Now|Book by email/ });
+    const bookingLinks = page.locator('a').filter({ hasText: /Book Now/ });
     assert.ok(await bookingLinks.count() > 9);
     for (const href of await bookingLinks.evaluateAll(links => links.map(link => link.getAttribute('href')))) {
-      const url = new URL(href);
-      assert.equal(url.protocol, 'mailto:');
-      assert.equal(url.pathname, 'Luxenailandspa27@gmail.com');
-      assert.match(url.searchParams.get('subject'), /Appointment request/);
-      assert.match(url.searchParams.get('body'), /Preferred date:.*\r\nPreferred time:/);
+      assert.equal(href, 'https://luxenailspa63vv.setmore.com');
     }
-    const treatmentBooking = new URL(await page.locator('.menu-card .svc__book').first().getAttribute('href'));
-    const treatmentName = await page.locator('.menu-card h3').first().innerText();
-    assert.equal(treatmentBooking.searchParams.get('subject'), `Appointment request - ${treatmentName}`);
-    assert.ok(treatmentBooking.searchParams.get('body').includes(`Service: ${treatmentName}`));
+    assert.equal(await page.locator('.menu-card .svc__book').first().getAttribute('href'), 'https://luxenailspa63vv.setmore.com');
     assert.match(await page.locator('.hero__payment').innerText(), /Cash only/);
     assert.match(await page.locator('#contact .payment-note').innerText(), /Cash only/);
     assert.equal(await page.locator('.about__media img[src*="retouched/"]').count(), 3);
