@@ -14,6 +14,7 @@
     { id: 'pedicure', title: 'Full Spa Pedicure', items: [
       ['Spa Pedicure Without Gel', '£35', 'p5240677.jpg'],
       ['Spa Pedicure With Gel Colour', '£40', 'p9789201.jpg'],
+      ['Deluxe Spa With Gel', '£50', 'p9789201.jpg'],
     ]},
     { id: 'toes', title: 'Acrylic Toes', items: [
       ['Full Set Acrylic Toes With Gel Colour', '£35', 'treatments/acrylic-toes.jpg'],
