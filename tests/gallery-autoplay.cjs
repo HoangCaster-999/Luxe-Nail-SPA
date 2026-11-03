@@ -15,7 +15,7 @@ const path = require('node:path');
     await page.goto(process.env.SITE_URL || 'http://127.0.0.1:8765', { waitUntil: 'domcontentloaded' });
     const schema = await page.locator('script[type="application/ld+json"]').textContent();
     assert.equal(JSON.parse(schema).email, 'Luxenailandspa27@gmail.com');
-    assert.equal(JSON.parse(schema).paymentAccepted, 'Cash');
+    assert.equal(JSON.parse(schema).paymentAccepted, undefined);
     assert.equal(await page.locator('a[href="mailto:Luxenailandspa27@gmail.com"]').count(), 2);
     const bookingLinks = page.locator('a').filter({ hasText: /Book Now/ });
     assert.ok(await bookingLinks.count() > 9);
@@ -27,8 +27,7 @@ const path = require('node:path');
       assert.ok((await link.getAttribute('rel')).split(/\s+/).includes('noopener'));
     }
     assert.equal(await page.locator('.menu-card .svc__book').first().getAttribute('href'), 'https://luxenailspa63vv.setmore.com');
-    assert.match(await page.locator('.hero__payment').innerText(), /Cash only/);
-    assert.match(await page.locator('#contact .payment-note').innerText(), /Cash only/);
+    assert.doesNotMatch(await page.locator('body').innerText(), /cash only|please bring cash/i);
     assert.equal(await page.locator('.about__media img[src*="retouched/"]').count(), 3);
     assert.deepEqual(await page.locator('.about__details img').evaluateAll(images => images.map(img => getComputedStyle(img).objectFit)), ['cover', 'cover']);
     assert.deepEqual(await page.locator('.nav a').evaluateAll(links => links.map(link => link.getAttribute('href'))), ['#top', '#gallery', '#services', '#prices', '#contact']);
@@ -96,6 +95,6 @@ const path = require('node:path');
     await page.waitForTimeout(750);
     assert.match(await page.locator('#gallery-image').getAttribute('src'), /floral-dot-french/);
     assert.deepEqual(errors, []);
-    console.log(JSON.stringify({ result: 'PASS', checks: ['autoplay', 'pause/resume', 'lightbox pause', 'wraparound', 'offscreen pause', 'reduced motion', 'cash and email', 'four viewport widths'], screenshots: out }));
+    console.log(JSON.stringify({ result: 'PASS', checks: ['autoplay', 'pause/resume', 'lightbox pause', 'wraparound', 'offscreen pause', 'reduced motion', 'payment notice removal and email', 'four viewport widths'], screenshots: out }));
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

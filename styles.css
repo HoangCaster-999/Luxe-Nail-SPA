@@ -331,11 +331,8 @@ mark { background: #f3dfac; color: inherit; }
 
 /* Real salon photography: focus the service crop; show the full set in the gallery. */
 .hero__art img[src*="retouched/"] { object-position: 50% 62%; }
-.hero__payment { margin-top: 18px; color: var(--gold-deep); font-size: 14px; }
 .about__details { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
 .about__details img { aspect-ratio: 4 / 5; object-fit: cover; }
-.payment-note { margin-top: 16px; color: var(--gold-deep); font-size: 14px; font-weight: 800; }
-.location__payment { margin: 0 0 28px; }
 a[href^="mailto:"] { overflow-wrap: anywhere; }
 .footer__inner > div { min-width: 0; }
 .about__media img[src*="retouched/"] { object-position: 50% 44%; }
