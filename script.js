@@ -44,6 +44,8 @@
       ['French / White Tips', 'From extra £5', 'retouched/pearl-gold-french.jpg'],
       ['Design', 'From extra £5', 'retouched/magenta-gold-florals.jpg'],
       ['Diamonds', 'From extra £5', 'retouched/crystal-floral-french.jpg'],
+      ['Chrome', '£5', 'retouched/chrome-stiletto.jpg'],
+      ['Cateye', '£5', 'retouched/pearl-dot-french.jpg'],
     ]},
   ];
 
