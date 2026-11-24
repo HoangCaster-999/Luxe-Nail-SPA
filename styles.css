@@ -136,6 +136,8 @@ p + p { margin-top: 20px; }
 .svc__price b { color: var(--ink); font-size: 20px; margin-left: 3px; }
 .svc__book { display: flex; justify-content: space-between; align-items: center; min-height: 58px; padding: 14px 24px; background: #f2e6cf; font-size: 16px; font-weight: 800; text-decoration: none; color: var(--gold-deep); transition: background .25s; }
 .svc__book:hover { background: #e8d3ad; }
+.cash-note { margin-top: 10px; color: var(--gold-deep); font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.prices__foot .cash-note { flex-basis: 100%; margin-top: -6px; text-align: center; }
 .prices__tools { margin-bottom: 42px; }
 .tabs { display: flex; gap: 8px; padding: 8px; background: var(--ivory); overflow-x: auto; scrollbar-width: thin; }
 .tab { flex-shrink: 0; border: 0; background: transparent; padding: 12px 20px; border-radius: 3px; color: var(--ink); font-size: 14px; font-weight: 700; }
